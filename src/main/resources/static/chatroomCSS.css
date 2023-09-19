@@ -1,0 +1,68 @@
+/* Basic Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+        #chat-box {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        #message-box {
+            flex-grow: 1;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #user-list {
+            flex: 1;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+        }
+        /* Input Styles */
+        #message-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        /* Message Styles */
+        .message {
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        .actions {
+            display: none;
+            margin-top: 5px;
+        }
+        .message:hover .actions {
+            display: block;
+        }
+        /* Modal and Overlay Styles */
+        #myModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #modal-content {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%; /* Modal width takes up 80% */
+        }
