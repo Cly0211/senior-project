@@ -1,6 +1,4 @@
-package com.seniorProject.project.chatroom;
-
-import com.seniorProject.project.User;
+package com.seniorProject.project.model;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

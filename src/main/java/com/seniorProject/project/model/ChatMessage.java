@@ -1,5 +1,6 @@
-package com.seniorProject.project.chatroom;
+package com.seniorProject.project.model;
 
+import com.seniorProject.project.enums.MessageType;
 import lombok.Data;
 
 @Data
