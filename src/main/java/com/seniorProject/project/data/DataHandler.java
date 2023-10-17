@@ -1,4 +1,4 @@
-package com.seniorProject.project;
+package com.seniorProject.project.data;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,15 @@ class DataHandler
     String id;
     Connection con;
     String[] attributes = {"mood", "activities", "journal"};
+
+    public static void main (String[] args)
+    {
+        System.out.println("=====");
+        DataHandler tester = new DataHandler("jwb175");
+        String[] activities = {"running", "jumping"};
+        tester.setEntry(java.sql.Date.valueOf("2000-10-29"),  1,  activities, "hello hi hello");
+        System.out.println(tester.getEntry(java.sql.Date.valueOf("2000-10-29")));
+    }
 
     DataHandler (String id)
     {
@@ -22,12 +31,12 @@ class DataHandler
         try
         {
             java.sql.Array activities = con.createArrayOf("String", activitiesArr);
-            String query = "insert into entries values ('" + id + "', '" + date + "', '" + mood + "', '" + activities + "', '" + journal + "')";
+            String query = "insert into 'entries' values ('" + id + "', '" + date + "', '" + mood + "', '" + activities.toString() + "', '" + journal + "')";
             con.createStatement().executeQuery(query); //TODO: error handling
         }
         catch (Exception e)
         {
-            System.out.println(e);
+           System.out.println("ERROR:\n" + e + "\n=====");
             return false;
         }
         return true;
@@ -37,7 +46,7 @@ class DataHandler
     //Returns null if the entire tuple does not exist
     Entry getEntry (java.sql.Date date)
     {
-        String query = "select mood, activities, journal from entries WHERE id = '" + id + "' AND entryDate = '" + date + "'";
+        String query = "select mood, activities, journal from 'entries' WHERE id = '" + id + "' AND entryDate = '" + date + "'";
         Integer mood;
         String[] activities;
         String journal;
@@ -48,7 +57,7 @@ class DataHandler
             if (result.next())
             {
                 mood = result.getInt("mood");
-                activities = (String[])result.getArray("activities").getArray();
+                activities = (String[])result.getString("activities").replaceAll("[{ }]","").split(",");
                 journal = result.getString("journal");
             }
             //Tuple does not exist
@@ -56,7 +65,7 @@ class DataHandler
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            System.out.println("ERROR:\n" + e + "\n=====");
             return null;
         }
 
@@ -72,7 +81,7 @@ class DataHandler
     //Returns null if an error occurs
     Map<java.sql.Date, Entry> getMap ()
     {
-        String query = "select entryDate, mood, activities, journal from entries WHERE id = '" + id;
+        String query = "select entryDate, mood, activities, journal from 'entries' WHERE id = '" + id;
         Map<java.sql.Date, Entry> out = new HashMap<java.sql.Date, Entry>();
 
         try
@@ -89,7 +98,7 @@ class DataHandler
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            System.out.println("ERROR:\n" + e + "\n=====");
             return null;
         }
 
@@ -124,24 +133,23 @@ class DataHandler
     }
     
     //Opens and returns a connection to the database
-    //TODO
     private Connection openConnection ()
     {
         try
         {
             //Load driver
-            Class.forName("oracle.jdbc.driver.OracleDriver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
                 
-            String server = ""; //Example given was "jdbc:oracle:thin:@localhost:1521:orcl"
-            String username = "";
-            String password = ""; //Probably shouldn't be plaintext
+            String server = "jdbc:mysql://localhost:3306/seniorProject?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+            String username = "root";
+            String password = "Chen@197813551";
 
             //Connect to DB
             return DriverManager.getConnection(server, username, password);
         }
         catch (Exception e)
         {
-            System.out.println(e);
+           System.out.println("ERROR:\n" + e + "\n=====");
             return null;
         }
     }

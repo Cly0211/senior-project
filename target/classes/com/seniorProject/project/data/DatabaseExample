@@ -3,6 +3,6 @@ CREATE TABLE entries
     id char(6) PRIMARY KEY NOT NULL,
     entryDate date PRIMARY KEY NOT NULL,
     mood int CHECK (mood >= 0 AND mood < 5),
-    activities varchar(32) ARRAY[32],
+    activities varchar(1024),
     journal varchar(1024)
 );
