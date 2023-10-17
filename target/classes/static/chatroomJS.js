@@ -50,6 +50,8 @@
             //updateOnlineUsers();
             modal.style.display = 'none';
             var socket = new SockJS('/ws');
+            console.log(socket.value);
+            console.log("11111111111111111");
             stompClient = Stomp.over(socket);
             stompClient.connect({},onConnected,onError);
         }
