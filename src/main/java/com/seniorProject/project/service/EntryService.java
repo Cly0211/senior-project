@@ -14,7 +14,23 @@ public class EntryService {
     @Autowired
     EntryMapper entryMapper;
 
-    public List<Entry> selectId(String id) {
-        return entryMapper.selectEntry(id);
+    public Entry selectEntry(String id, java.sql.Date date) {
+        return entryMapper.selectEntry(id, date);
+    }
+
+    public List<Entry> selectEntries(String id) {
+        return entryMapper.selectEntries(id);
+    }
+
+    public void insertEntry(String id, java.sql.Date date, int mood, String activities, String journal) {
+        insertEntry(id, date, mood, activities, journal);
+    }
+
+    public void deleteEntry(String id, java.sql.Date date) {
+        entryMapper.deleteEntry(id, date);
+    }
+
+    public void updateEntry(String id, java.sql.Date date, int mood, String activities, String journal) {
+        entryMapper.updateEntry(id, date, mood, activities, journal);
     }
 }
