@@ -1,0 +1,21 @@
+#coloring-book {
+    width: 600px;
+    height: 400px;
+    border: 1px solid #000;
+    background-image: url('coloring-page.jpg');
+    background-size: cover;
+}
+
+#color-palette {
+    display: flex;
+    justify-content: center;
+}
+
+.color {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+/* Add styles for more colors and buttons as needed */
