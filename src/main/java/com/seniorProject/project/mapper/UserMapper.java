@@ -1,5 +1,7 @@
 package com.seniorProject.project.mapper;
+import com.seniorProject.project.enums.MessageType;
 import com.seniorProject.project.model.User;
+import lombok.AllArgsConstructor;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

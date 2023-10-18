@@ -49,9 +49,7 @@
             //users.push(username);
             //updateOnlineUsers();
             modal.style.display = 'none';
-            var socket = new SockJS('/ws');
-            console.log(socket.value);
-            console.log("11111111111111111");
+            var socket = new SockJS('ws://localhost:8080/ws');
             stompClient = Stomp.over(socket);
             stompClient.connect({},onConnected,onError);
         }
