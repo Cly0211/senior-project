@@ -17,7 +17,7 @@ public class EntryController {
     EntryService entryService;
 
     @GetMapping("/selectEntry/{id}") //TODO: add new vars to path
-    public Entry selectEntry(@PathVariable String id, @PathVariable java.sql.Date date){
+    public Entry selectEntry(@PathVariable String id, @PathVariable String date){
         try{
             Entry entry = entryService.selectEntry(id, date);
             return entry;
@@ -37,18 +37,17 @@ public class EntryController {
         }
     }
 
-    @GetMapping("/insertEntry/{id}") //TODO: add new vars to path
-    public void insertEntry(@PathVariable String id, @PathVariable java.sql.Date date, @PathVariable int mood, @PathVariable String activities, @PathVariable String journal){
+    @PostMapping("/insertEntry") //TODO: add new vars to path
+    public void insertEntry(@RequestBody Entry entry){
         try{
-            validateID(id);
-            entryService.insertEntry(id, date, mood, activities, journal);
+            entryService.insertEntry(entry);
         }catch(Exception e){
-            throw new RuntimeException("error when inserting entry: "+id+", "+date+":\n"+e);
+            throw new RuntimeException("error when inserting entry: " + entry);
         }
     }
 
     @GetMapping("/deleteEntry/{id}") //TODO: add new vars to path
-    public void deleteEntry(@PathVariable String id, @PathVariable java.sql.Date date){
+    public void deleteEntry(@PathVariable String id, @PathVariable String date){
         try{
             entryService.deleteEntry(id, date);
         }catch(Exception e){
@@ -57,7 +56,7 @@ public class EntryController {
     }
 
     @GetMapping("/updateEntry/{id}") //TODO: add new vars to path
-    public void updateEntry(@PathVariable String id, @PathVariable java.sql.Date date, @PathVariable int mood, @PathVariable String activities, @PathVariable String journal){
+    public void updateEntry(@PathVariable String id, @PathVariable String date, @PathVariable int mood, @PathVariable String activities, @PathVariable String journal){
         try{
             entryService.updateEntry(id, date, mood, activities, journal);
         }catch(Exception e){

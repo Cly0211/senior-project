@@ -14,7 +14,7 @@ public class EntryService {
     @Autowired
     EntryMapper entryMapper;
 
-    public Entry selectEntry(String id, java.sql.Date date) {
+    public Entry selectEntry(String id, String date) {
         return entryMapper.selectEntry(id, date);
     }
 
@@ -22,15 +22,15 @@ public class EntryService {
         return entryMapper.selectEntries(id);
     }
 
-    public void insertEntry(String id, java.sql.Date date, int mood, String activities, String journal) {
-        entryMapper.insertEntry(id, date, mood, activities, journal);
+    public void insertEntry(Entry entry) {
+        entryMapper.insertEntry(entry);
     }
 
-    public void deleteEntry(String id, java.sql.Date date) {
+    public void deleteEntry(String id, String date) {
         entryMapper.deleteEntry(id, date);
     }
 
-    public void updateEntry(String id, java.sql.Date date, int mood, String activities, String journal) {
+    public void updateEntry(String id, String date, int mood, String activities, String journal) {
         entryMapper.updateEntry(id, date, mood, activities, journal);
     }
 
