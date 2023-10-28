@@ -1,6 +1,7 @@
 package com.seniorProject.project.controller;
 
 import com.seniorProject.project.model.User;
+import com.seniorProject.project.model.Verification;
 import com.seniorProject.project.service.UserService;
 import com.seniorProject.project.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,28 +93,31 @@ public class WebController {
      * return 1 if correct
      * return -1 if incorrect
      * return -2 if expired
-     * http method: get
-     * http://localhost:8080/verify/{id}/{verCode}
+     * http method: post
+     * http://localhost:8080/verify
      */
-    @GetMapping("/verify/{id}/{verCode}")
-    public Integer verify(@PathVariable String id,@PathVariable String verCode){
+    @PostMapping("/verify")
+    public Integer verify(@RequestBody Verification verification){
+        String id = verification.getId();
+        String verCode = verification.getVerCode();
         if (id == null || id.isEmpty() || verCode == null || verCode.isEmpty())
             throw new RuntimeException("id or verification code can't be empty");
-        return verificationService.verify(id,verCode,new Date());
+        return verificationService.verify(id,verCode,verification.getExpiredDate());
     }
 
     /**
-     * reset password if verification code is correct
+     * reset password
      * return 1 if the password was reset successfully
      * return -1 if the email is not registered
      * return -2 if the new password is same as the old one
-     * http method: get
-     * http://localhost:8080/reset/{id}/{newPassword}
+     * http method: post
+     * http://localhost:8080/reset
      */
-    @GetMapping("/reset/{id}/{newPassword}")
-    public Integer reset(@PathVariable String id,@PathVariable String newPassword){
-        if (id == null || id.isEmpty() || newPassword == null || newPassword.isEmpty())
+    @PostMapping("/reset")
+    public Integer reset(@RequestBody User user){
+        if (user.getEmail() == null || user.getEmail().isEmpty()
+                || user.getPassword() == null || user.getPassword().isEmpty())
             throw new RuntimeException("id or new password code can't be empty");
-        return userService.reset(id, newPassword);
+        return userService.reset(user.getEmail(), user.getPassword());
     }
 }
