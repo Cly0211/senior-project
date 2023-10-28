@@ -2,14 +2,19 @@ package com.seniorProject.project.controller;
 
 import com.seniorProject.project.model.User;
 import com.seniorProject.project.service.UserService;
+import com.seniorProject.project.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @CrossOrigin
 public class WebController {
     @Autowired
     UserService userService;
+    @Autowired
+    VerificationService verificationService;
 
     /**
      * sample code for front end
@@ -66,5 +71,49 @@ public class WebController {
             throw new RuntimeException("invalid email or username");
         user = userService.register(user);
         return user;
+    }
+
+    /**
+     * send email with verification code
+     * return 1 if the email was sent successfully
+     * return -1 if the email is not registered
+     * http method: get
+     * http://localhost:8080/sendEmail/{id}
+     */
+    @GetMapping("/sendEmail/{id}")
+    public Integer sendEmail(@PathVariable String id){
+        if (id == null || id.isEmpty())
+            throw new RuntimeException("email can't be empty");
+        return userService.sendEmail(id);
+    }
+
+    /**
+     * verify the verification code
+     * return 1 if correct
+     * return -1 if incorrect
+     * return -2 if expired
+     * http method: get
+     * http://localhost:8080/verify/{id}/{verCode}
+     */
+    @GetMapping("/verify/{id}/{verCode}")
+    public Integer verify(@PathVariable String id,@PathVariable String verCode){
+        if (id == null || id.isEmpty() || verCode == null || verCode.isEmpty())
+            throw new RuntimeException("id or verification code can't be empty");
+        return verificationService.verify(id,verCode,new Date());
+    }
+
+    /**
+     * reset password if verification code is correct
+     * return 1 if the password was reset successfully
+     * return -1 if the email is not registered
+     * return -2 if the new password is same as the old one
+     * http method: get
+     * http://localhost:8080/reset/{id}/{newPassword}
+     */
+    @GetMapping("/reset/{id}/{newPassword}")
+    public Integer reset(@PathVariable String id,@PathVariable String newPassword){
+        if (id == null || id.isEmpty() || newPassword == null || newPassword.isEmpty())
+            throw new RuntimeException("id or new password code can't be empty");
+        return userService.reset(id, newPassword);
     }
 }

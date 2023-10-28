@@ -1,16 +1,30 @@
 package com.seniorProject.project.service;
 
+
 import com.seniorProject.project.mapper.UserMapper;
 import com.seniorProject.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 @Component
 public class UserService {
     @Autowired
-    User user;
+    JavaMailSender javaMailSender;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    VerificationService verificationService;
+
+    private String from = "seniorprojectgroup13@gmail.com";
+    private String subject = "[Mindful Journey] Forget Password?";
+    private String text1 = "Dear user,\n\nYour verification code is ";
+    private String text2 = ". The code will expire in five minutes.\n\nBest,\nGroup 13";
 
     /**
      * add a new user to database
@@ -71,5 +85,41 @@ public class UserService {
             throw new RuntimeException("the email has been registered");
         userMapper.insert(user);
         return user;
+    }
+
+    /**
+     * send email with verification code
+     */
+    public Integer sendEmail(String email) {
+        if (!this.checkEmail(email))
+            return -1;
+        String verCode = String.valueOf(new Random().nextInt(9000) + 1000);
+        Date date = new Date();
+        // send email
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email+"@case.edu");
+        message.setFrom(from);
+        message.setSubject(subject);
+        message.setText(text1+verCode+text2);
+        message.setSentDate(date);
+        javaMailSender.send(message);
+
+        //add verification code to database
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, 5);
+        verificationService.addCode(email, verCode, calendar.getTime());
+        return 1;
+    }
+
+    public Integer reset(String id, String newPassword) {
+        User dbUser = userMapper.selectUser(id);
+        if (dbUser == null)
+            return -1;
+        if (newPassword.equals(dbUser.getPassword()))
+            return -2;
+        dbUser.setPassword(newPassword);
+        updateUser(dbUser);
+        return 1;
     }
 }

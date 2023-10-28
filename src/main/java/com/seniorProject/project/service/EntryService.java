@@ -2,7 +2,6 @@ package com.seniorProject.project.service;
 
 import com.seniorProject.project.model.Entry;
 import com.seniorProject.project.mapper.EntryMapper;
-import com.seniorProject.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +14,24 @@ public class EntryService {
     @Autowired
     EntryMapper entryMapper;
 
-    public List<Entry> selectId(String id) {
-        return entryMapper.selectEntry(id);
+    public Entry selectEntry(String id, String date) {
+        return entryMapper.selectEntry(id, date);
     }
 
-    public void insertEntry(Entry entry){
-        entryMapper.insert(entry);
+    public List<Entry> selectEntries(String id) {
+        return entryMapper.selectEntries(id);
     }
 
-    public void updateEntry(Entry entry) {
-        entryMapper.updateEntry(entry);
+    public void insertEntry(Entry entry) {
+        entryMapper.insertEntry(entry);
+    }
+
+    public void deleteEntry(String id, String date) {
+        entryMapper.deleteEntry(id, date);
+    }
+
+    public void updateEntry(String id, String date, int mood, String activities, String journal) {
+        entryMapper.updateEntry(id, date, mood, activities, journal);
     }
 
 }
