@@ -16,7 +16,8 @@ public class EntryController {
     @Autowired
     EntryService entryService;
 
-    @GetMapping("/selectEntry/{id}") //TODO: add new vars to path
+    //http://localhost:8080/entry/selectEntry/abc1234/2023-09-23
+    @GetMapping("/selectEntry/{id}/{date}")
     public Entry selectEntry(@PathVariable String id, @PathVariable String date){
         try{
             Entry entry = entryService.selectEntry(id, date);
@@ -26,6 +27,7 @@ public class EntryController {
         }
     }
 
+    //http://localhost:8080/entry/selectEntries/abc1234
     @GetMapping("/selectEntries/{id}")
     public List<Entry> selectEntries(@PathVariable String id){
         try{
@@ -37,7 +39,8 @@ public class EntryController {
         }
     }
 
-    @PostMapping("/insertEntry") //TODO: add new vars to path
+    //http://localhost:8080/entry/insertEntry
+    @PostMapping("/insertEntry") 
     public void insertEntry(@RequestBody Entry entry){
         try{
             entryService.insertEntry(entry);
@@ -46,7 +49,8 @@ public class EntryController {
         }
     }
 
-    @GetMapping("/deleteEntry/{id}") //TODO: add new vars to path
+    //http://localhost:8080/entry/deleteEntry/abc1234/2023-09-23
+    @GetMapping("/deleteEntry/{id}/{date}") 
     public void deleteEntry(@PathVariable String id, @PathVariable String date){
         try{
             entryService.deleteEntry(id, date);
@@ -55,7 +59,8 @@ public class EntryController {
         }
     }
 
-    @GetMapping("/updateEntry/{id}") //TODO: add new vars to path
+    //http://localhost:8080/entry/updateEntry/abc1234/2023-09-23/3/classes,projects/hello
+    @GetMapping("/updateEntry/{id}/{date}/{mood}/{activities}/{journal}") 
     public void updateEntry(@PathVariable String id, @PathVariable String date, @PathVariable int mood, @PathVariable String activities, @PathVariable String journal){
         try{
             entryService.updateEntry(id, date, mood, activities, journal);
@@ -65,7 +70,7 @@ public class EntryController {
     }
 
     //Maps activites to their average mood value
-    public Map<String, Double> activityMoodMap( String id){
+    public Map<String, Double> activityMoodMap(String id){
         Map<String, Double> out = new HashMap<String, Double>();
         Map<String, Integer> totals = new HashMap<String, Integer>();
         //Iterate through days
