@@ -25,6 +25,6 @@ public interface EntryMapper {
     @Insert("insert into `entries` (id, entryDate, mood, activities, journal) values (#{id},#{entryDate},#{mood},#{activities},#{journal})")
     void insertEntry(Entry entry);
 
-    @Update("update entries set (#{mood}, #{activities}, #{journal}) where id = #{id} and entrydate = #{date}")
-    void updateEntry(String id, String date, int mood, String activities, String journal);
+    @Update("update entries set (#{entry.mood}, #{entry.activities}, #{entry.journal}) where id = #{entry.id} and entrydate = #{entry.entryDate}")
+    void updateEntry(Entry entry);
 }

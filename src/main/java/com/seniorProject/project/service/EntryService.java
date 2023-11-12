@@ -30,8 +30,8 @@ public class EntryService {
         entryMapper.deleteEntry(id, date);
     }
 
-    public void updateEntry(String id, String date, int mood, String activities, String journal) {
-        entryMapper.updateEntry(id, date, mood, activities, journal);
+    public void updateEntry(Entry entry) {
+        entryMapper.updateEntry(entry);
     }
 
 }

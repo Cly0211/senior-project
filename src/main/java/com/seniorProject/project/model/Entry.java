@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class Entry {
-    private String id;
+    public String id;
 
-    private String entryDate;
+    public String entryDate;
 
-    private Integer mood;
-    private String activities;
-    private String journal;
+    public Integer mood;
+    public String activities;
+    public String journal;
 }

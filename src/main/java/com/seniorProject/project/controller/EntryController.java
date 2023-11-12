@@ -43,6 +43,7 @@ public class EntryController {
     @PostMapping("/insertEntry") 
     public void insertEntry(@RequestBody Entry entry){
         try{
+            validateID(entry.id);
             entryService.insertEntry(entry);
         }catch(Exception e){
             throw new RuntimeException("error when inserting entry: " + entry);
@@ -50,7 +51,7 @@ public class EntryController {
     }
 
     //http://localhost:8080/entry/deleteEntry/abc1234/2023-09-23
-    @GetMapping("/deleteEntry/{id}/{date}") 
+    @DeleteMapping("/deleteEntry/{id}/{date}") 
     public void deleteEntry(@PathVariable String id, @PathVariable String date){
         try{
             entryService.deleteEntry(id, date);
@@ -60,12 +61,12 @@ public class EntryController {
     }
 
     //http://localhost:8080/entry/updateEntry/abc1234/2023-09-23/3/classes,projects/hello
-    @GetMapping("/updateEntry/{id}/{date}/{mood}/{activities}/{journal}") 
-    public void updateEntry(@PathVariable String id, @PathVariable String date, @PathVariable int mood, @PathVariable String activities, @PathVariable String journal){
+    @PostMapping("/updateEntry") 
+    public void updateEntry(@RequestBody Entry entry){
         try{
-            entryService.updateEntry(id, date, mood, activities, journal);
+            entryService.updateEntry(entry);
         }catch(Exception e){
-            throw new RuntimeException("error when updating entry: "+id+", "+date+":\n"+e);
+            throw new RuntimeException("error when updating entry: "+entry.id+", "+entry.entryDate+":\n"+e);
         }
     }
 
