@@ -43,7 +43,7 @@ public class EntryController {
     @PostMapping("/insertEntry") 
     public void insertEntry(@RequestBody Entry entry){
         try{
-            validateID(entry.id);
+            //validateID(entry.id);
             entryService.insertEntry(entry);
         }catch(Exception e){
             throw new RuntimeException("error when inserting entry: " + entry);
