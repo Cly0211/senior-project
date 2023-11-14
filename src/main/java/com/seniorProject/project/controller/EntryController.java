@@ -5,6 +5,7 @@ import com.seniorProject.project.service.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class EntryController {
         try{
             entryService.updateEntry(entry);
         }catch(Exception e){
-            throw new RuntimeException("error when updating entry: "+entry.id+", "+entry.entryDate+":\n"+e);
+            throw new RuntimeException("error when updating entry: "+entry.getId()+", "+entry.getEntryDate()+":\n"+e);
         }
     }
 
@@ -84,6 +85,52 @@ public class EntryController {
                 out.put(activity, oldAvg + ((entry.getMood() - oldAvg) / newTotal));
                 totals.put(activity, newTotal);
             }
+        }
+        return out;
+    }
+
+    //Creates a histogram of mood ratings
+    public int[] moodHistogram(String id){
+        int[] out = new int[5];
+        //Iterate through days
+        for (Entry entry : selectEntries(id)) {
+            out[entry.getMood()]++;
+        }
+        return out;
+    }
+
+    //Creates a histogram of activities
+    public Map<String, Integer> activityHistogram(String id){
+        Map<String, Integer> out = new HashMap<String, Integer>();
+        //Iterate through days
+        for (Entry entry : selectEntries(id)) {
+            //Iterate through all activities on that day
+            for (String activity : entry.getActivities().split(",")) {
+                out.put(activity, out.getOrDefault(activity, 0) + 1);
+            }
+        }
+        return out;
+    }
+
+    //Creates a rolling average of mood ratings given a time span
+    public Map<java.sql.Date, Double> rollingAvg(String id, int days){
+        Map<java.sql.Date, Double> out = new HashMap<java.sql.Date, Double>();
+        List<Entry> entrySet = selectEntries(id);
+        //Iterate through days
+        for (Entry entry1 : entrySet) {
+            int total = entry1.getMood(), count = 1;
+            java.sql.Date maxDate = java.sql.Date.valueOf(entry1.getEntryDate());
+            java.sql.Date minDate = java.sql.Date.valueOf(Date.valueOf(entry1.getEntryDate()).toLocalDate().plusDays(days));
+            //Find all entries within the rolling average range
+            for (Entry entry2 : entrySet) {
+                java.sql.Date date = java.sql.Date.valueOf(entry2.getEntryDate());
+                if (date.before(maxDate) &&  date.after(minDate)){
+                    total += entry2.getMood();
+                    count++;
+                }
+            }
+            //Averages are mapped by the date on the most recent end of the rolling window
+            out.put(maxDate, (double)total / count);
         }
         return out;
     }
