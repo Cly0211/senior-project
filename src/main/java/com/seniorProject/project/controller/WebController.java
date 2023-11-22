@@ -93,6 +93,7 @@ public class WebController {
      * return 1 if correct
      * return -1 if incorrect
      * return -2 if expired
+     * return -3 if the user didn't send verification code
      * http method: post
      * http://localhost:8080/verify
      */

@@ -29,6 +29,8 @@ public class VerificationService {
      */
     public Integer verify(String id, String verCode, Date date){
         Verification dbVer = verificationMapper.selectCode(id);
+        if (dbVer == null)
+            return -3;
         if (!verCode.equals(dbVer.getVerCode()))
             return -1;
         if (date.compareTo(dbVer.getExpiredDate()) > 0)
