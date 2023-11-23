@@ -121,7 +121,7 @@ public class UserService {
         User dbUser = userMapper.selectUser(id);
         if (dbUser == null)
             return -1;
-        if (newPassword.equals(dbUser.getPassword()))
+        if (BCrypt.checkpw(newPassword,dbUser.getPassword()))
             return -2;
         dbUser.setPassword(newPassword);
         updateUser(dbUser);
