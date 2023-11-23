@@ -1,9 +1,12 @@
 package com.seniorProject.project.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seniorProject.project.model.Encryption;
 import com.seniorProject.project.model.User;
 import com.seniorProject.project.model.Verification;
 import com.seniorProject.project.service.UserService;
 import com.seniorProject.project.service.VerificationService;
+import com.seniorProject.project.util.CipherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,12 +55,20 @@ public class WebController {
      * http://localhost:8080/login
      */
     @PostMapping("/login")
-    public User login(@RequestBody User user){
-        if (user.getEmail() == null || user.getEmail().isEmpty()
-                || user.getPassword() == null || user.getPassword().isEmpty())
-            throw new RuntimeException("invalid email or username");
-        user = userService.login(user);
-        return user;
+    public User login(@RequestBody Encryption encryption){
+        try{
+            String aesKey = CipherUtil.rsaDecrypt(encryption.getEncryptedAESkey());
+            String plainText = CipherUtil.aesDecrypt(encryption.getCipherText(),aesKey);
+            ObjectMapper objectMapper = new ObjectMapper();
+            User user = objectMapper.readValue(plainText, User.class);
+            if (user.getEmail() == null || user.getEmail().isEmpty()
+                    || user.getPassword() == null || user.getPassword().isEmpty())
+                throw new RuntimeException("invalid email or password");
+            user = userService.login(user);
+            return user;
+        }catch (Exception e){
+            throw new RuntimeException("error when converting json to class");
+        }
     }
 
     /**
