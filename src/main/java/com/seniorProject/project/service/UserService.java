@@ -23,7 +23,7 @@ public class UserService {
     VerificationService verificationService;
 
     private String from = "seniorprojectgroup13@gmail.com";
-    private String subject = "[Mindful Journey] Forget Password?";
+    private String subject = "[Mindful Journey] Verification";
     private String text1 = "Dear user,\n\nYour verification code is ";
     private String text2 = ". The code will expire in five minutes.\n\nBest,\nGroup 13";
 
