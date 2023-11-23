@@ -97,16 +97,34 @@ public class WebController {
     }
 
     /**
-     * send email with verification code
+     * send email with verification code for resetting password
      * return 1 if the email was sent successfully
      * return -1 if the email is not registered
      * http method: get
-     * http://localhost:8080/sendEmail/{id}
+     * http://localhost:8080/sendResetEmail/{id}
      */
-    @GetMapping("/sendEmail/{id}")
-    public Integer sendEmail(@PathVariable String id){
+    @GetMapping("/sendResetEmail/{id}")
+    public Integer sendResetEmail(@PathVariable String id){
         if (id == null || id.isEmpty())
             throw new RuntimeException("email can't be empty");
+        if (!userService.checkEmail(id))
+            return -1;
+        return userService.sendEmail(id);
+    }
+
+    /**
+     * send email with verification code for registration
+     * return 1 if the email was sent successfully
+     * return -1 if the email has been registered
+     * http method: get
+     * http://localhost:8080/sendRegEmail/{id}
+     */
+    @GetMapping("/sendRegEmail/{id}")
+    public Integer sendRegEmail(@PathVariable String id){
+        if (id == null || id.isEmpty())
+            throw new RuntimeException("email can't be empty");
+        if (userService.checkEmail(id))
+            return -1;
         return userService.sendEmail(id);
     }
 

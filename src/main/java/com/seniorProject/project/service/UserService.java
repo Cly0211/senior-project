@@ -96,8 +96,6 @@ public class UserService {
      * send email with verification code
      */
     public Integer sendEmail(String email) {
-        if (!this.checkEmail(email))
-            return -1;
         String verCode = String.valueOf(new Random().nextInt(9000) + 1000);
         Date date = new Date();
         // send email
