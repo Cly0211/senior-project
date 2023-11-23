@@ -1,6 +1,7 @@
 package com.seniorProject.project.service;
 
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.seniorProject.project.mapper.UserMapper;
 import com.seniorProject.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class UserService {
      * add a new user to database
      */
     public void insertUser(User user){
+        String encrypted = BCrypt.hashpw(user.getPassword());
+        user.setPassword(encrypted);
         userMapper.insert(user);
     }
 
@@ -37,6 +40,8 @@ public class UserService {
      * update user password in database
      */
     public void updateUser(User user) {
+        String encrypted = BCrypt.hashpw(user.getPassword());
+        user.setPassword(encrypted);
         userMapper.updatePassword(user);
     }
 
@@ -65,26 +70,26 @@ public class UserService {
     /**
      * verify email and password to login
      */
-    public User login(User user) {
+    public Integer login(User user) {
         User dbUser = userMapper.selectUser(user.getEmail());
         if (dbUser == null){
-            throw new RuntimeException("email is not registered: "+user.getEmail());
+            return -1;
         }
-        if (!user.getPassword().equals(dbUser.getPassword())){
-            throw new RuntimeException("incorrect password ("+user.getPassword()+") for email "+user.getEmail());
+        if (!BCrypt.checkpw(user.getPassword(),dbUser.getPassword())){
+            return -2;
         }
-        return dbUser;
+        return 1;
     }
 
     /**
      * verify email and add new user to database
      */
-    public User register(User user) {
+    public Integer register(User user) {
         User dbUser = userMapper.selectUser(user.getEmail());
         if (dbUser != null)
-            throw new RuntimeException("the email has been registered");
-        userMapper.insert(user);
-        return user;
+            return -1;
+        insertUser(user);
+        return 1;
     }
 
     /**

@@ -51,11 +51,14 @@ public class WebController {
 
     /**
      * verify email and password to login
+     * return -1 is the email is not registered
+     * return -2 if wrong password
+     * return 1 if email and password match
      * http method: post
      * http://localhost:8080/login
      */
     @PostMapping("/login")
-    public User login(@RequestBody Encryption encryption){
+    public Integer login(@RequestBody Encryption encryption){
         try{
             String aesKey = CipherUtil.rsaDecrypt(encryption.getEncryptedAESkey());
             String plainText = CipherUtil.aesDecrypt(encryption.getCipherText(),aesKey);
@@ -64,8 +67,7 @@ public class WebController {
             if (user.getEmail() == null || user.getEmail().isEmpty()
                     || user.getPassword() == null || user.getPassword().isEmpty())
                 throw new RuntimeException("invalid email or password");
-            user = userService.login(user);
-            return user;
+            return userService.login(user);
         }catch (Exception e){
             throw new RuntimeException("error when converting json to class");
         }
@@ -73,16 +75,25 @@ public class WebController {
 
     /**
      * verify email and register
+     * return -1 if the email has already registered
+     * return 1 if successfully registered
      * http method: post
-     * http://localhost:8080/login
+     * http://localhost:8080/register
      */
     @PostMapping("/register")
-    public User register(@RequestBody User user){
-        if (user.getEmail() == null || user.getEmail().isEmpty()
-                || user.getPassword() == null || user.getPassword().isEmpty())
-            throw new RuntimeException("invalid email or username");
-        user = userService.register(user);
-        return user;
+    public Integer register(@RequestBody Encryption encryption){
+        try{
+            String aesKey = CipherUtil.rsaDecrypt(encryption.getEncryptedAESkey());
+            String plainText = CipherUtil.aesDecrypt(encryption.getCipherText(),aesKey);
+            ObjectMapper objectMapper = new ObjectMapper();
+            User user = objectMapper.readValue(plainText, User.class);
+            if (user.getEmail() == null || user.getEmail().isEmpty()
+                    || user.getPassword() == null || user.getPassword().isEmpty())
+                throw new RuntimeException("invalid email or password");
+            return userService.register(user);
+        }catch (Exception e){
+            throw new RuntimeException("error when converting json to class");
+        }
     }
 
     /**
@@ -126,10 +137,18 @@ public class WebController {
      * http://localhost:8080/reset
      */
     @PostMapping("/reset")
-    public Integer reset(@RequestBody User user){
-        if (user.getEmail() == null || user.getEmail().isEmpty()
-                || user.getPassword() == null || user.getPassword().isEmpty())
-            throw new RuntimeException("id or new password code can't be empty");
-        return userService.reset(user.getEmail(), user.getPassword());
+    public Integer reset(@RequestBody Encryption encryption){
+        try{
+            String aesKey = CipherUtil.rsaDecrypt(encryption.getEncryptedAESkey());
+            String plainText = CipherUtil.aesDecrypt(encryption.getCipherText(),aesKey);
+            ObjectMapper objectMapper = new ObjectMapper();
+            User user = objectMapper.readValue(plainText, User.class);
+            if (user.getEmail() == null || user.getEmail().isEmpty()
+                    || user.getPassword() == null || user.getPassword().isEmpty())
+                throw new RuntimeException("invalid email or password");
+            return userService.reset(user.getEmail(), user.getPassword());
+        }catch (Exception e){
+            throw new RuntimeException("error when converting json to class");
+        }
     }
 }
