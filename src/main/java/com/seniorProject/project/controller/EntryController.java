@@ -72,7 +72,9 @@ public class EntryController {
     }
 
     //Maps activites to their average mood value
-    public Map<String, Double> activityMoodMap(String id){
+    //http://localhost:8080/entry/activityMoodMap/abc1234
+    @GetMapping("/activityMoodMap/{id}")
+    public Map<String, Double> activityMoodMap(@PathVariable String id){
         Map<String, Double> out = new HashMap<String, Double>();
         Map<String, Integer> totals = new HashMap<String, Integer>();
         //Iterate through days
@@ -90,7 +92,9 @@ public class EntryController {
     }
 
     //Creates a histogram of mood ratings
-    public int[] moodHistogram(String id){
+    //http://localhost:8080/entry/moodHistogram/abc1234
+    @GetMapping("/moodHistogram/{id}")
+    public int[] moodHistogram(@PathVariable String id){
         int[] out = new int[5];
         //Iterate through days
         for (Entry entry : selectEntries(id)) {
@@ -100,7 +104,9 @@ public class EntryController {
     }
 
     //Creates a histogram of activities
-    public Map<String, Integer> activityHistogram(String id){
+    //http://localhost:8080/entry/activityHistogram/abc1234
+    @GetMapping("/activityHistogram/{id}")
+    public Map<String, Integer> activityHistogram(@PathVariable String id){
         Map<String, Integer> out = new HashMap<String, Integer>();
         //Iterate through days
         for (Entry entry : selectEntries(id)) {
@@ -113,7 +119,9 @@ public class EntryController {
     }
 
     //Creates a rolling average of mood ratings given a time span
-    public Map<java.sql.Date, Double> rollingAvg(String id, int days){
+    //http://localhost:8080/entry/rollingAvg/abc1234/7
+    @GetMapping("/rollingAvg/{id}/{days}")
+    public Map<java.sql.Date, Double> rollingAvg(@PathVariable String id, @PathVariable int days){
         Map<java.sql.Date, Double> out = new HashMap<java.sql.Date, Double>();
         List<Entry> entrySet = selectEntries(id);
         //Iterate through days
