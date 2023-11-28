@@ -75,19 +75,25 @@ public class EntryController {
     //http://localhost:8080/entry/activityMoodMap/abc1234
     @GetMapping("/activityMoodMap/{id}")
     public Map<String, Double> activityMoodMap(@PathVariable String id){
-        Map<String, Double> out = new HashMap<String, Double>();
-        Map<String, Integer> totals = new HashMap<String, Integer>();
-        //Iterate through days
+        Map<String, Double> sums = new HashMap<String, Double>();
+        Map<String, Integer> counts = new HashMap<String, Integer>();
+        //Iterate through days to calculate sums
         for (Entry entry : selectEntries(id)) {
+            int mood = entry.getMood();
             //Iterate through all activities on that day
-            for (String activity : entry.getActivities().split(",")) {
-                double oldAvg = out.getOrDefault(activity, 0.0);
-                int newTotal = totals.getOrDefault(activity, 0) + 1;
-                //Compute average mood using previous average
-                out.put(activity, oldAvg + ((entry.getMood() - oldAvg) / newTotal));
-                totals.put(activity, newTotal);
+            for (String a : entry.getActivities().split(",")) {
+                String activity = a.trim();
+                double oldSum = sums.getOrDefault(activity, 0.0);
+                //Add current mood to sum
+                sums.put(activity, oldSum + mood);
             }
         }
+        //Divide sums to get averages
+        Map<String, Double> out = new HashMap<String, Double>();
+        for (Map.Entry<String, Double> entry : sums.entrySet()) {
+            out.put(entry.getKey(), entry.getValue() / counts.get(entry.getKey()));
+        }
+
         return out;
     }
 
@@ -127,12 +133,12 @@ public class EntryController {
         //Iterate through days
         for (Entry entry1 : entrySet) {
             int total = entry1.getMood(), count = 1;
-            java.sql.Date maxDate = java.sql.Date.valueOf(entry1.getEntryDate());
-            java.sql.Date minDate = java.sql.Date.valueOf(Date.valueOf(entry1.getEntryDate()).toLocalDate().plusDays(days));
+            java.sql.Date minDate = java.sql.Date.valueOf(entry1.getEntryDate());
+            java.sql.Date maxDate = java.sql.Date.valueOf(Date.valueOf(entry1.getEntryDate()).toLocalDate().plusDays(days));
             //Find all entries within the rolling average range
             for (Entry entry2 : entrySet) {
                 java.sql.Date date = java.sql.Date.valueOf(entry2.getEntryDate());
-                if (date.before(maxDate) &&  date.after(minDate)){
+                if (date.before(maxDate) && date.after(minDate)){
                     total += entry2.getMood();
                     count++;
                 }
