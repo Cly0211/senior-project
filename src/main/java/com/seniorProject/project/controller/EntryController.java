@@ -75,25 +75,20 @@ public class EntryController {
     //http://localhost:8080/entry/activityMoodMap/abc1234
     @GetMapping("/activityMoodMap/{id}")
     public Map<String, Double> activityMoodMap(@PathVariable String id){
-        Map<String, Double> sums = new HashMap<String, Double>();
-        Map<String, Integer> counts = new HashMap<String, Integer>();
-        //Iterate through days to calculate sums
+        Map<String, Double> out = new HashMap<String, Double>();
+        Map<String, Integer> totals = new HashMap<String, Integer>();
+        //Iterate through days
         for (Entry entry : selectEntries(id)) {
-            int mood = entry.getMood();
             //Iterate through all activities on that day
             for (String a : entry.getActivities().split(",")) {
                 String activity = a.trim();
-                double oldSum = sums.getOrDefault(activity, 0.0);
-                //Add current mood to sum
-                sums.put(activity, oldSum + mood);
+                double oldAvg = out.getOrDefault(activity, 0.0);
+                int newTotal = totals.getOrDefault(activity, 0) + 1;
+                //Compute average mood using previous average
+                out.put(activity, oldAvg + ((entry.getMood() - oldAvg) / newTotal));
+                totals.put(activity, newTotal);
             }
         }
-        //Divide sums to get averages
-        Map<String, Double> out = new HashMap<String, Double>();
-        for (Map.Entry<String, Double> entry : sums.entrySet()) {
-            out.put(entry.getKey(), entry.getValue() / counts.get(entry.getKey()));
-        }
-
         return out;
     }
 
