@@ -82,11 +82,14 @@ public class EntryController {
             //Iterate through all activities on that day
             for (String a : entry.getActivities().split(",")) {
                 String activity = a.trim();
-                double oldAvg = out.getOrDefault(activity, 0.0);
-                int newTotal = totals.getOrDefault(activity, 0) + 1;
-                //Compute average mood using previous average
-                out.put(activity, oldAvg + ((entry.getMood() - oldAvg) / newTotal));
-                totals.put(activity, newTotal);
+                //Ensure activity is valid
+                if (!activity.equals("")) {
+                    double oldAvg = out.getOrDefault(activity, 0.0);
+                    int newTotal = totals.getOrDefault(activity, 0) + 1;
+                    //Compute average mood using previous average
+                    out.put(activity, oldAvg + ((entry.getMood() - oldAvg) / newTotal));
+                    totals.put(activity, newTotal);
+                }
             }
         }
         return out;
