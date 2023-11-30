@@ -115,8 +115,12 @@ public class EntryController {
         //Iterate through days
         for (Entry entry : selectEntries(id)) {
             //Iterate through all activities on that day
-            for (String activity : entry.getActivities().split(",")) {
-                out.put(activity, out.getOrDefault(activity, 0) + 1);
+            for (String a : entry.getActivities().split(",")) {
+                String activity = a.trim();
+                //Ensure activity is valid
+                if (!activity.equals("")) {
+                    out.put(activity, out.getOrDefault(activity, 0) + 1);
+                }
             }
         }
         return out;
@@ -148,7 +152,7 @@ public class EntryController {
     }
 
     //Ensures the CaseID is formatted correctly
-    private void validateID(String input) throws Exception{
+    /*private void validateID(String input) throws Exception{
         //Make sure size is correct
         if (input.length() > 7 || input.length() < 4) { throw new Exception("Malformed ID: Length"); }
         //Iterate through input
@@ -163,5 +167,5 @@ public class EntryController {
                 throw new Exception("Malformed ID: Numbers");
             }
         }
-    }
+    }*/
 }
